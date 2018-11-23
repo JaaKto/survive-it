@@ -1,37 +1,48 @@
 import React, { Component } from 'react';
-import { GoogleApiWrapper } from 'google-maps-react';
+import { GoogleApiWrapper, InfoWindow, Marker } from 'google-maps-react';
 import CurrentLocation from './Map';
 import CurrentWeather from './Weather';
 import './App.scss';
 
 export class MapContainer extends Component {
-  // constructor() {
-  //   super();
-  //   this.state = {
-  //     currentLocation: {
-  //       lat: null,
-  //       lng: null
-  //     }
-  //   };
-  //   if (navigator && navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(pos => {
-  //       const coords = pos.coords;
-  //       this.setState({
-  //         currentLocation: {
-  //           lat: coords.latitude,
-  //           lng: coords.longitude
-  //         }
-  //       });
-  //     });
-  //   }
-  // }
+  state = {
+    showingInfoWindow: false,
+    activeMarker: {},
+    selectedPlace: {}
+  };
+
+  onMarkerClick = (props, marker, e) =>
+    this.setState({
+      selectedPlace: props,
+      activeMarker: marker,
+      showingInfoWindow: true
+    });
+
+  onClose = props => {
+    if (this.state.showingInfoWindow) {
+      this.setState({
+        showingInfoWindow: false,
+        activeMarker: null
+      });
+    }
+  };
 
   render() {
     return (
       <div>
-      <CurrentLocation centerAroundCurrentLocation google={this.props.google} >
+      <CurrentLocation centerAroundCurrentLocation google={this.props.google}>
+        <Marker onClick={this.onMarkerClick} name={'current location'} />
+        <InfoWindow
+          marker={this.state.activeMarker}
+          visible={this.state.showingInfoWindow}
+          onClose={this.onClose}
+        >
+          <div>
+            <h4>{this.state.selectedPlace.name}</h4>
+          </div>
+        </InfoWindow>
       </CurrentLocation>
-      <CurrentWeather></CurrentWeather>
+      <CurrentWeather ></CurrentWeather>
       </div>
     );
   }

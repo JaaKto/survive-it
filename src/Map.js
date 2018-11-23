@@ -1,13 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './Map.scss';
 
-const mapStyles = {
-  map: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%'
-  }
-};
+
 export class CurrentLocation extends React.Component {
   constructor(props) {
     super(props);
@@ -101,11 +96,9 @@ export class CurrentLocation extends React.Component {
   }
 
   render() {
-    const style = Object.assign({}, mapStyles.map);
-
     return (
       <div>
-        <div style={style} ref="map">
+        <div className="map" ref="map">
           Loading map...
         </div>
         {this.renderChildren()}

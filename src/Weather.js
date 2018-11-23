@@ -43,25 +43,20 @@ export class CurrentWeather extends Component {
   getWeather = () => {
     this.setState({ isFetching: true});
 
-    fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${this.state.currentLocation.lat}&lon=${this.state.currentLocation.lng}&appid=${API_KEY}`)
+    fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${this.state.currentLocation.lat}&lon=${this.state.currentLocation.lng}&appid=${API_KEY}&units=metric`)
       .then(response => response.json())
       .then(json => this.setState({ currentWeather: json, isFetching: false}));
-      // .then(json => console.log(json))
-    console.log(this.state.currentLocation)
-    console.log(this.state.currentWeather)
   }
 
   render() {
-    const { data } = this.state;
-    console.log(data)
     if (this.state.currentWeather) {
       return (
         <div className='weather'>
-          <h2>name - {this.state.currentWeather.name}</h2>
-          <h1>{this.state.currentWeather.weather[0].description}</h1>
-          <h3>pressure - {this.state.currentWeather.main.pressure}</h3>
-          <h3>temp - {this.state.currentWeather.main.temp}</h3>
-          <h3>humidity - {this.state.currentWeather.main.humidity}</h3>
+          <h2>{this.state.currentWeather.name}</h2>
+          <h1>{this.state.currentWeather.weather[0].main}</h1>
+          <h3>Pressure: {this.state.currentWeather.main.pressure}hPa</h3>
+          <h3>Temp: {this.state.currentWeather.main.temp}°C</h3>
+          <h3>Humidity: {this.state.currentWeather.main.humidity}%</h3>
         </div>
       )
     } else {
