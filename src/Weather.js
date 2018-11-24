@@ -15,6 +15,7 @@ export class CurrentWeather extends Component {
       },
       currentWeather: null,
       rate: null,
+      averageRating: null,
       isFetching: false,
       green: '#4CAF50',
       orange: '#FF9800',
@@ -43,6 +44,11 @@ export class CurrentWeather extends Component {
     if (prevState.currentWeather !== this.state.currentWeather) {
       this.getRating();
     }
+    if (prevState.rate !== this.state.rate) {
+      this.setState({
+        averageRating: this.getAverageRating(Object.values(this.state.rate))
+      })
+    }
   }
 
   getWeather = () => {
@@ -65,20 +71,49 @@ export class CurrentWeather extends Component {
           this.state.currentWeather.main.pressure >= 998 && this.state.currentWeather.main.pressure <= 1018 ? 2 : 1,
           humidity: this.state.currentWeather.main.humidity >= 40 && this.state.currentWeather.main.humidity <= 60 ? 3:
           this.state.currentWeather.main.humidity >= 38 && this.state.currentWeather.main.humidity <= 62 ? 2 : 1
-        }
+        },
       });
     }
   }
 
+  getAverageRating = (arr) => {
+    return arr.reduce( ( p, c ) => p + c, 0 ) / arr.length;
+  }
 
   render() {
     if (this.state.currentWeather && this.state.rate) {
       return (
         <div className='weather'>
-          <div>
-            <h1>Niebezpieczeństwo</h1>
-            <h2>Lepiej nie wychodź!</h2>
-          </div>
+          {this.state.averageRating === 3 &&
+            <div>
+              <h1>Idealne warunki</h1>
+              <h2>Lepiej nie będzie!</h2>
+            </div>
+          }
+          {this.state.averageRating >= 2.5 && this.state.averageRating !== 3 &&
+            <div>
+              <h1>Dobre warunki</h1>
+              <h2>Możesz wyjść</h2>
+            </div>
+          }
+          {this.state.averageRating >= 2 && this.state.averageRating < 2.5 &&
+            <div>
+              <h1>Kiepskie warunki</h1>
+              <h2>Lepiej nie wychodź</h2>
+            </div>
+          }
+          {this.state.averageRating >= 1.5 && this.state.averageRating < 2 &&
+            <div>
+              <h1>Okropne warunki</h1>
+              <h2>Nie wychodź!</h2>
+            </div>
+          }
+          {this.state.averageRating < 1.5 &&
+            <div>
+              <h1>Tragiczne warunki</h1>
+              <h2>Nie ruszaj się z miejsca!</h2>
+            </div>
+          }
           <h2>{this.state.currentWeather.name}</h2>
           <h1><span style={{
             color: this.state.rate.id === 3 ? this.state.green : this.state.rate.id === 2 ? this.state.orange : this.state.red
