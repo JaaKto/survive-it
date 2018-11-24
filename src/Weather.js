@@ -14,7 +14,11 @@ export class CurrentWeather extends Component {
         lng: lng
       },
       currentWeather: null,
-      isFetching: false
+      rate: null,
+      isFetching: false,
+      green: '#4CAF50',
+      orange: '#FF9800',
+      red: '#F44336'
     };
   }
 
@@ -30,13 +34,14 @@ export class CurrentWeather extends Component {
         });
       });
     }
-    this.getWeather();
-
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.currentLocation !== this.state.currentLocation) {
       this.getWeather();
+    }
+    if (prevState.currentWeather !== this.state.currentWeather) {
+      this.getRating();
     }
   }
 
@@ -48,32 +53,45 @@ export class CurrentWeather extends Component {
       .then(json => this.setState({ currentWeather: json, isFetching: false}));
   }
 
-  render() {
+  getRating = () => {
+    if (this.state.currentWeather !== null){
+      this.setState({
+        rate: {
+          id: this.state.currentWeather.weather[0].id === 800 && this.state.currentWeather.weather[0].id === 801 ? 3:
+          this.state.currentWeather.weather[0].id >= 802 ? 2 : 1,
+          temp: this.state.currentWeather.main.temp >= 13 && this.state.currentWeather.main.temp <= 23 ? 3:
+          this.state.currentWeather.main.temp >= 11 && this.state.currentWeather.main.temp <= 25 ? 2 : 1,
+          pressure: this.state.currentWeather.main.pressure >= 1000 && this.state.currentWeather.main.pressure <= 1016 ? 3:
+          this.state.currentWeather.main.pressure >= 998 && this.state.currentWeather.main.pressure <= 1018 ? 2 : 1,
+          humidity: this.state.currentWeather.main.humidity >= 40 && this.state.currentWeather.main.humidity <= 60 ? 3:
+          this.state.currentWeather.main.humidity >= 38 && this.state.currentWeather.main.humidity <= 62 ? 2 : 1
+        }
+      });
+    }
+  }
 
-    if (this.state.currentWeather) {
+
+  render() {
+    if (this.state.currentWeather && this.state.rate) {
       return (
         <div className='weather'>
           <div>
-            <h1><span>Niebezpieczeństwo</span></h1>
+            <h1>Niebezpieczeństwo</h1>
             <h2>Lepiej nie wychodź!</h2>
           </div>
           <h2>{this.state.currentWeather.name}</h2>
           <h1><span style={{
-            color: this.state.currentWeather.weather[0].id === 800 && this.state.currentWeather.weather[0].id === 801 ? 'green':
-            this.state.currentWeather.weather[0].id >= 802 ? 'yellow' : 'red'
+            color: this.state.rate.id === 3 ? this.state.green : this.state.rate.id === 2 ? this.state.orange : this.state.red
           }}>{this.state.currentWeather.weather[0].description}</span></h1>
           <div>
           <h3>Temp: <span style={{
-              color: this.state.currentWeather.main.temp >= 13 && this.state.currentWeather.main.temp <= 23 ? 'green':
-              this.state.currentWeather.main.temp >= 11 && this.state.currentWeather.main.temp <= 25 ? 'yellow' : 'red'
+              color: this.state.rate.temp === 3 ? this.state.green : this.state.rate.temp === 2 ? this.state.orange : this.state.red
             }}>{this.state.currentWeather.main.temp}°C</span></h3>
             <h3>Ciśnienie: <span style={{
-              color: this.state.currentWeather.main.pressure >= 1000 && this.state.currentWeather.main.pressure <= 1016 ? 'green':
-              this.state.currentWeather.main.pressure >= 998 && this.state.currentWeather.main.pressure <= 1018 ? 'yellow' : 'red'
+              color: this.state.rate.pressure === 3 ? this.state.green : this.state.rate.pressure === 2 ? this.state.orange : this.state.red
             }}>{this.state.currentWeather.main.pressure}hPa</span></h3>
             <h3>Wilgotność: <span style={{
-              color: this.state.currentWeather.main.humidity >= 40 && this.state.currentWeather.main.humidity <= 60 ? 'green':
-              this.state.currentWeather.main.humidity >= 38 && this.state.currentWeather.main.humidity <= 62 ? 'yellow' : 'red'
+              color: this.state.rate.humidity === 3 ? this.state.green : this.state.rate.humidity === 2 ? this.state.orange : this.state.red
             }}>{this.state.currentWeather.main.humidity}%</span></h3>
           </div>
         </div>
