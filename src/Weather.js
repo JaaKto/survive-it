@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './Weather.scss';
 
-const API_KEY = 'f67085f7e369082f71e4963e5d32c8e1';
+const API_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
 
 export class CurrentWeather extends Component {
   constructor(props) {
@@ -63,7 +63,7 @@ export class CurrentWeather extends Component {
     if (this.state.currentWeather !== null){
       this.setState({
         rate: {
-          id: this.state.currentWeather.weather[0].id === 800 && this.state.currentWeather.weather[0].id === 801 ? 3:
+          id: this.state.currentWeather.weather[0].id === 800 || this.state.currentWeather.weather[0].id === 801 ? 3:
           this.state.currentWeather.weather[0].id >= 802 ? 2 : 1,
           temp: this.state.currentWeather.main.temp >= 13 && this.state.currentWeather.main.temp <= 23 ? 3:
           this.state.currentWeather.main.temp >= 11 && this.state.currentWeather.main.temp <= 25 ? 2 : 1,
@@ -140,11 +140,8 @@ export class CurrentWeather extends Component {
 export default CurrentWeather;
 
 CurrentWeather.defaultProps = {
-  zoom: 14,
   initialCenter: {
     lat: -34.397,
     lng: 150.644
-  },
-  centerAroundCurrentLocation: false,
-  visible: true
+  }
 };
